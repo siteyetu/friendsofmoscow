@@ -365,9 +365,9 @@
         // Mobile Dropdown Toggle
         document.querySelectorAll('.nav-item').forEach(item => {
             item.addEventListener('click', (e) => {
-                if (window.innerWidth <= 968) {
-                    const dropdown = item.querySelector('.dropdown');
-                    if (dropdown) {
+                const dropdown = item.querySelector('.dropdown');
+                if (dropdown) {
+                    if (window.innerWidth <= 968) {
                         e.preventDefault();
                         // Close other dropdowns
                         document.querySelectorAll('.dropdown.show').forEach(otherDropdown => {
@@ -384,9 +384,9 @@
         // Secondary Dropdown Toggle for Mobile
         document.querySelectorAll('.has-secondary').forEach(item => {
             item.addEventListener('click', (e) => {
-                if (window.innerWidth <= 968) {
-                    const secondaryDropdown = item.querySelector('.secondary-dropdown');
-                    if (secondaryDropdown) {
+                const secondaryDropdown = item.querySelector('.secondary-dropdown');
+                if (secondaryDropdown) {
+                    if (window.innerWidth <= 968) {
                         e.preventDefault();
                         e.stopPropagation();
                         secondaryDropdown.classList.toggle('show');
