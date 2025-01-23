@@ -57,13 +57,31 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 1rem 0;
+    position: relative;
 }
 
 .nav-links {
     display: flex;
-    gap: 1rem; /* Reduced from 2rem */
+    gap: 1rem;
     list-style: none;
+    overflow: hidden; /* Hide overflow */
+    transition: max-height 0.3s ease; /* Smooth transition */
 }
+
+.nav-links.active {
+    max-height: 500px; /* Adjust as necessary */
+}
+
+@media (max-width: 968px) {
+    .nav-links {
+        max-height: 0; /* Collapsed state */
+    }
+    
+    .nav-links.active {
+        max-height: 500px; /* Expanded state */
+    }
+}
+
 
 .nav-item {
     position: relative;
