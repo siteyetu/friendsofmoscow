@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RU-KE Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        :root {
+            --primary-color: #1a4d80;
+            --secondary-color: #e63946;
+            --bg-color: #f1faee;
+            --text-color: #1d3557;
+            --hover-color: #457b9d;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            color: var(--text-color);
+        }
+
+        .nav-container {
+            background: var(--primary-color);
+            padding: 0.5rem 2rem;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .translate-btn {
+            background: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 0.3rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .translate-btn:hover {
+            background: #c92c37;
+        }
+
+        .nav-menu {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-item {
+            position: relative;
+            color: white;
+            cursor: pointer;
+            padding: 0.5rem 1rem;
+        }
+
+        .dropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: white;
+            min-width: 250px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            border-radius: 4px;
+            z-index: 1000;
+        }
+
+        .nav-item:hover .dropdown {
+            display: block;
+        }
+
+        .dropdown-item {
+            padding: 0.8rem 1rem;
+            color: var(--text-color);
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .dropdown-item:hover {
+            background: var(--bg-color);
+            color: var(--hover-color);
+        }
+
+        .secondary-dropdown {
+            display: none;
+            position: absolute;
+            left: 100%;
+            top: 0;
+            background: white;
+            min-width: 250px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+
+        .tertiary-dropdown {
+            display: none;
+            position: absolute;
+            left: 100%;
+            top: 0;
+            background: white;
+            min-width: 250px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+
+        .has-secondary:hover .secondary-dropdown,
+        .has-tertiary:hover .tertiary-dropdown {
+            display: block;
+        }
+
+        .auth-btn {
+            background: var(--secondary-color);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .auth-btn:hover {
+            background: #c92c37;
+        }
+
+        .menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        main {
+            margin-top: 120px;
+            padding: 2rem;
+            flex-grow: 1;
+        }
+
+        section {
+            padding: 4rem 0;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            color: var(--primary-color);
+        }
+
+        footer {
+            background: var(--primary-color);
+            color: white;
+            padding: 3rem 2rem;
+            margin-top: 4rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-section {
+            padding: 1rem;
+        }
+
+        .footer-title {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--secondary-color);
+        }
+
+        .faq-item {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1rem 0;
+        }
+
+        .faq-question {
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: bold;
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+            padding: 0 1rem;
+        }
+
+        .faq-answer.active {
+            max-height: 500px;
+            padding: 1rem;
+        }
+
+        .useful-links a {
+            color: white;
+            text-decoration: none;
+            display: block;
+            padding: 0.5rem 0;
+            transition: color 0.3s ease;
+        }
+
+        .useful-links a:hover {
+            color: var(--secondary-color);
+        }
+
+        @media (max-width: 968px) {
+            .menu-btn {
+                display: block;
+            }
+
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: var(--primary-color);
+                flex-direction: column;
+                padding: 1rem;
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .dropdown,
+            .secondary-dropdown,
+            .tertiary-dropdown {
+                position: static;
+                width: 100%;
+                box-shadow: none;
+                display: none;
+            }
+
+            .dropdown.show,
+            .secondary-dropdown.show,
+            .tertiary-dropdown.show {
+                display: block;
+            }
+
+            .dropdown-item {
+                padding-left: 2rem;
+            }
+
+            .secondary-dropdown .dropdown-item {
+                padding-left: 3rem;
+            }
+
+            .tertiary-dropdown .dropdown-item {
+                padding-left: 4rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav-container">
+        <div class="top-bar">
+            <button class="translate-btn">SW</button>
+            <button class="translate-btn">RU</button>
+            <a href="#login" class="auth-btn">Login/Sign up</a>
+        </div>
+        <div class="nav-menu">
+            <button class="menu-btn">☰</button>
+            <ul class="nav-links">
+                <li class="nav-item"><a href="#home" style="color: white; text-decoration: none;">Home</a></li>
+                <li class="nav-item"><a href="#about" style="color: white; text-decoration: none;">About</a></li>
+
+                <!-- RussianToKenya -->
+                <li class="nav-item">
+                    RussianToKenya
+                    <div class="dropdown">
+                        <div class="dropdown-item">VISA</div>
+                        <div class="dropdown-item">Travel Docs</div>
+                        <div class="dropdown-item">Arrivals</div>
+                        <div class="dropdown-item">Accommodation</div>
+                        <div class="dropdown-item">Tourism</div>
+                        <div class="dropdown-item">Language</div>
+                    </div>
+                </li>
+
+                <!-- KenyansToRussia -->
+                <li class="nav-item">
+                    KenyansToRussia
+                    <div class="dropdown">
+                        <div class="dropdown-item">VISA</div>
+                        <div class="dropdown-item">Travel Docs</div>
+                        <div class="dropdown-item">Arrivals</div>
+                        <div class="dropdown-item">Accommodation</div>
+                        <div class="dropdown-item">Tourism</div>
+                        <div class="dropdown-item">Language</div>
+                    </div>
+                </li>
+
+                <!-- RussiansInKenya -->
+                <li class="nav-item">
+                    RussiansInKenya
+                    <div class="dropdown">
+                        <div class="dropdown-item has-secondary">
+                            Trade
+                            <div class="secondary-dropdown">
+                                <div class="dropdown-item">Imports</div>
+                                <div class="dropdown-item">Exports</div>
+                                <div class="dropdown-item">Re-export</div>
+                            </div>
+                        </div>
+                        <div class="dropdown-item">Consultancy</div>
+                        <div class="dropdown-item has-secondary">
+                            Education
+                            <div class="secondary-dropdown">
+                                <div class="dropdown-item">Pre-school</div>
+                                <div class="dropdown-item">Junior School</div>
+                                <div class="dropdown-item">Senior School</div>
+                                <div class="dropdown-item">College</div>
+                                <div class="dropdown-item">Undergraduate</div>
+                                <div class="dropdown-item">Postgraduate</div>
+                                <div class="dropdown-item">R&D</div>
+                                <div class="dropdown-item">Learn Russian</div>
+                                <div class="dropdown-item">Learn Swahili</div>
+                                <div class="dropdown-item">Learn English</div>
+                            </div>
+                        </div>
+                        <div class="dropdown-item">Business Process Outsourcing (BPO)</div>
+                        <div class="dropdown-item">News</div>
+                        <div class="dropdown-item">Culture</div>
+                        <div class="dropdown-item">Religion</div>
+                        <div class="dropdown-item has-secondary">
+                            Professionals
+                            <div class="secondary-dropdown">
+                                <div class="dropdown-item">Healthcare</div>
+                                <div class="dropdown-item">Education</div>
+                                <div class="dropdown-item">Manufacturing</div>
+                                <div class="dropdown-item">Finance</div>
+                                <div class="dropdown-item">Legal</div>
+                                <div class="dropdown-item">Technology</div>
+                                <div class="dropdown-item">Engineering</div>
+                                <div class="dropdown-item">Agriculture</div>
+                                <div class="dropdown-item">Energy</div>
+                                <div class="dropdown-item">Construction</div>
+                            </div>
+                        </div>
+                        <div class="dropdown-item has-secondary">
+                            Technicals
+                            <div class="secondary-dropdown">
+                                <div class="dropdown-item">Skilled Work</div>
+                                <div class="dropdown-item">Unskilled Work</div>
+                            </div>
+                        </div>
+                        <div class="dropdown-item has-secondary">
+                            Art
+                            <div class="secondary-dropdown">
+                                <div class="dropdown-item">Music</div>
+                                <div class="dropdown-item">Food</div>
+                                <div class="dropdown-item">Movies</div>
+                                <div class="dropdown-item">Attire</div>
+                                <div class="dropdown-item">Cuisine</div>
+                                <div class="dropdown-item">Architectural Works</div>
+                                <div class="dropdown-item">Paintings</div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+
+                <!-- KenyansInRussia -->
+                <li class="nav-item">
+                    KenyansInRussia
+                    <div class="dropdown">
+                        <!-- Mirror of RussiansInKenya structure -->
+                        <div class="dropdown-item has-secondary">
+                            Trade
+                            <div class="secondary-dropdown">
+                                <div class="dropdown-item">Imports</div>
+                                <div class="dropdown-item">Exports</div>
+                                <div class="dropdown-item">Re-export</div>
+                            </div>
+                        </div>
+                        <div class="dropdown-item">Consultancy</div>
+                        <div class="dropdown-item has-secondary">
+                            Education
+                            <div class="secondary-dropdown">
+                                <div class="dropdown-item">Pre-school</div>
+                                <div class="dropdown-item">Junior School</div>
+                                <div class="dropdown-item">Senior School</div>
+                                <div class="dropdown-item">College</div>
+                                <div class="dropdown-item">Undergraduate</div>
+                                <div class="dropdown-item">Postgraduate</div>
+                                <div class="dropdown-item">R&D</div>
+                                <div class="dropdown-item">Learn Russian</div>
+                                <div class="dropdown-item">Learn Swahili</div>
+                                <div class="dropdown-item">Learn English</div>
+                            </div>
+                        </div>
+                        <div class="dropdown-item">Business Process Outsourcing (BPO)</div>
+                        <div class="dropdown-item">News</div>
+                        <div class="dropdown-item">Culture</div>
+                        <div class="dropdown-item">Religion</div>
+                        <div class="dropdown-item has-secondary">
+                            Professionals
+                            <div class="secondary-dropdown">
+                                <div class="dropdown-item">Healthcare</div>
+                                <div class="dropdown-item">Education</div>
+                                <div class="dropdown-item">Manufacturing</div>
+                                <div class="dropdown-item">Finance</div>
+                                <div class="dropdown-item">Legal</div>
+                                <div class="dropdown-item">Technology</div>
+                                <div class="dropdown-item">Engineering</div>
+                                <div class="dropdown-item">Agriculture</div>
+                                <div class="dropdown-item">Energy</div>
+                                <div class="dropdown-item">Construction</div>
+                            </div>
+                        </div>
+                        <div class="dropdown-item has-secondary">
+                            Technicals
+                            <div class="secondary-dropdown">
+                                <div class="dropdown-item">Skilled Work</div>
+                                <div class="dropdown-item">Unskilled Work</div>
+                            </div>
+                        </div>
+                        <div class="dropdown-item has-secondary">
+                            Art
+                            <div class="secondary-dropdown">
+                                <div class="dropdown-item">Music</div>
+                                <div class="dropdown-item">Food</div>
+                                <div class="dropdown-item">Movies</div>
+                                <div class="dropdown-item">Attire</div>
+                                <div class="dropdown-item">Cuisine</div>
+                                <div class="dropdown-item">Architectural Works</div>
+                                <div class="dropdown-item">Paintings</div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+
+                <!-- DiscussionPortal -->
+                <li class="nav-item">
+                    DiscussionPortal
+                    <div class="dropdown">
+                        <div class="dropdown-item">Membership Plans & Benefits</div>
+                        <div class="dropdown-item">Public Discussions</div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <main>
+        <section id="home">
+            <h2 class="section-title">Home</h2>
+            <!-- Add home content -->
+        </section>
+
+        <section id="about">
+            <h2 class="section-title">About</h2>
+            <!-- Add about content -->
+        </section>
+
+        <!-- Add sections for all nav items -->
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3 class="footer-title">Contact</h3>
+                <p>Email: info@ru-ke-portal.com</p>
+                <p>Phone: +254 XXX XXX XXX</p>
+                <p>Address: Nairobi, Kenya</p>
+            </div>
+
+            <div class="footer-section">
+                <h3 class="footer-title">FAQ</h3>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        How do I apply for a visa?
+                        <span class="toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        Contact the respective embassy and submit required documentation...
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        What documents do I need?
+                        <span class="toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        Required documents typically include passport, visa application...
+                    </div>
+                </div>
+                <!-- Add more FAQ items -->
+            </div>
+
+            <div class="footer-section">
+                <h3 class="footer-title">Useful Links</h3>
+                <div class="useful-links">
+                    <a href="#">Embassy In Kenya</a>
+                    <a href="#">Embassy In Russia</a>
+                    <a href="#">Newspapers</a>
+                    <a href="#">Journals</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile Menu Toggle
+        const menuBtn = document.querySelector('.menu-btn');
+        const navLinks = document.querySelector('.nav-links');
+
+        menuBtn.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+
+        // Mobile Dropdown Toggle
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', (e) => {
+                if (window.innerWidth <= 968) {
+                    const dropdown = item.querySelector('.dropdown');
+                    if (dropdown) {
+                        e.preventDefault();
+                        dropdown.classList.toggle('show');
+                    }
+                }
+            });
+        });
+
+        // Secondary Dropdown Toggle for Mobile
+        document.querySelectorAll('.has-secondary').forEach(item => {
+            item.addEventListener('click', (e) => {
+                if (window.innerWidth <= 968) {
+                    const secondaryDropdown = item.querySelector('.secondary-dropdown');
+                    if (secondaryDropdown) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        secondaryDropdown.classList.toggle('show');
+                    }
+                }
+            });
+        });
+
+        // FAQ Accordion
+        document.querySelectorAll('.faq-question').forEach(question => {
+            question.addEventListener('click', () => {
+                const answer = question.nextElementSibling;
+                const toggle = question.querySelector('.toggle');
+                
+                answer.classList.toggle('active');
+                toggle.textContent = answer.classList.contains('active') ? '-' : '+';
+            });
+        });
+
+        // Smooth Scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>
