@@ -361,6 +361,24 @@
                 });
             }
         });
+
+        // Dropdown Toggle for Desktop
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', (e) => {
+                const dropdown = item.querySelector('.dropdown');
+                if (dropdown) {
+                    e.preventDefault(); // Prevent default action
+                    // Toggle dropdown visibility
+                    dropdown.classList.toggle('show');
+                    // Close other dropdowns
+                    document.querySelectorAll('.dropdown.show').forEach(otherDropdown => {
+                        if (otherDropdown !== dropdown) {
+                            otherDropdown.classList.remove('show');
+                        }
+                    });
+                }
+            });
+        });
     
         // Mobile Dropdown Toggle
         document.querySelectorAll('.nav-item').forEach(item => {

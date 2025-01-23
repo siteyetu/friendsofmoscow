@@ -120,6 +120,17 @@ body {
     color: var(--hover-color);
 }
 
+.nav-item .dropdown {
+    display: none; /* Hide dropdowns by default */
+    position: absolute; /* Position relative to the nav item */
+    background: white; /* Dropdown background */
+    z-index: 10; /* Ensure it appears above other content */
+}
+
+.nav-item .dropdown.show {
+    display: block; /* Show dropdown when toggled */
+}
+
 .secondary-dropdown {
     display: none;
     position: absolute;
